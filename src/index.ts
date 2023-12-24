@@ -29,6 +29,7 @@ if (command == 'init') {
   const config = {
     language: 'zh',
     datasource: 'openai',
+    openai_base_url: '',
     openai_api_key: '',
     azure_api_key: '',
     azure_deployment_id: '',
@@ -107,7 +108,7 @@ async function gptRequestAzure(prompt: string) {
 
 async function gptRequestOpenai(prompt: string) {
   const res = await axios.post(
-    `https://api.openai.com/v1/chat/completions`,
+    `https://${config.openai_base_url || 'api.openai.com'}/v1/chat/completions`,
     {
       model: 'gpt-3.5-turbo-16k',
       messages: [{ role: 'user', content: prompt }],
@@ -118,10 +119,10 @@ async function gptRequestOpenai(prompt: string) {
     },
     {
       headers: {
-      Authorization: `Bearer ${config.openai_api_key}`,
+        Authorization: `Bearer ${config.openai_api_key}`,
       },
       timeout: 100000,
-    },
+    }
   );
   return res.data.choices[0].message.content;
 }
